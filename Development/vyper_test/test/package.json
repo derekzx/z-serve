@@ -1,0 +1,24 @@
+{
+  "name": "test1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build:sol": "truffle compile",
+    "build:vyper": "truper",
+    "build": "npm run build:sol && npm run build:vyper",
+    "console": "truffle console",
+    "migrate:ganache": "truffle migrate --network ganache",
+    "migrate:mainnet": "truffle migrate --network mainnet",
+    "test": "truffle test"
+  },
+  "author": "",
+  "license": "ISC",
+  "directories": {
+    "test": "test"
+  },
+  "description": "",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "truffle-assertions": "^0.7.1"
+  }
+}

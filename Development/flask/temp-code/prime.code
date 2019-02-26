@@ -1,0 +1,15 @@
+// c0-c4 — candidates in the list, one of which not prime
+// p, q — non-trivial factors for the non-prime candidate
+def main(field c0, field c1, field c2, field c3, field c4, private field p, private field q) -> (field): 
+  // Assert p,q are non trivial 
+  0 == if 1 < p then 0 else 1 fi 
+  0 == if 1 < q then 0 else 1 fi
+ 
+  // Count how many candidates can be factored into p, q 
+  field nonPrime = 0 
+  nonPrime = nonPrime + if p * q == c0 then 1 else 0 fi 
+  nonPrime = nonPrime + if p * q == c1 then 1 else 0 fi 
+  nonPrime = nonPrime + if p * q == c2 then 1 else 0 fi 
+  nonPrime = nonPrime + if p * q == c3 then 1 else 0 fi 
+  nonPrime = nonPrime + if p * q == c4 then 1 else 0 fi
+  return nonPrime
