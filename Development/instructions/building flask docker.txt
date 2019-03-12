@@ -1,0 +1,15 @@
+docker build -t flask-test:latest .
+
+docker build -t zokrates-flask:latest .
+
+docker run -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker -v /home/derek/Desktop/FYP/Development/flask/ZoKrates/code:/app/ZoKrates/code -d -p 5000:5000 --name Flask-test flask-test
+docker run -v /home/derek/Desktop/FYP/Development/flask/ZoKrates/code:/app/ZoKrates/code -d -p 5000:5000 --name zokrates-flask zokrates-flask
+
+docker exec -it wonderul_herschel /bin/bash
+
+docker build -t zokrates-flask:latest .
+docker tag zokrates-flask derekzx/zokrates-flask
+docker push derekzx/zokrates-flask
+docker pull derekzx/zokrates-flask
+
+docker run -d -p 80:5000 -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker -v /home/ec2-user/ZoKrates/code:/app/ZoKrates/code derekzx/zokrates-flask:latest

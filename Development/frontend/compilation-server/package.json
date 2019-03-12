@@ -1,0 +1,15 @@
+{
+  "name": "npm-solc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "solc": "^0.5.4",
+    "util": "^0.11.1"
+  }
+}

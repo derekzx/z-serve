@@ -5,10 +5,11 @@ contract govSC {
     address owner;
 
     constructor() public{
-        birthdayHashes[0x2A00CDf2032007133f21e794dd832DB2692D9426] = 0x8C91EDE82094D275461A02DE74FDB96428A28E4076159DF403D00B956968AEA7;
+        birthdayHashes[0x2A00CDf2032007133f21e794dd832DB2692D9426] = 0x19E154992DDED7F825098D336696AC7DE950CC59FAF7EE42E907D5EA6A38C29A;
         owner = msg.sender;
         
     }
+    
     function setHash(address checkedPerson, bytes32 birthdayHash) public {
         if (msg.sender == owner)
             birthdayHashes[checkedPerson] = birthdayHash;

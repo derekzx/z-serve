@@ -1,0 +1,29 @@
+<html>
+    <link rel="stylesheet" media="screen" href="static/bootstrap.min.css">
+    <link rel="stylesheet" href="static/bootstrap-theme.min.css">
+    <head>
+      {% if title %}
+      <title>{{ title }} - Birthday ZKP</title>
+      {% else %}
+      <title>Welcome to Birthday ZKP</title>
+      {% endif %}
+    </head>
+    <body>
+        <div>Birthday ZKP: 
+            <a href="/index">Home</a>
+            <a href="/generate">Generate</a>
+            <a href="/deploy">Deploy</a>
+        </div>
+        <hr>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </body>
+</html>

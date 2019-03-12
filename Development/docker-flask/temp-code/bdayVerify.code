@@ -1,0 +1,10 @@
+import "./hashes/sha256/512bitPacked.code" as sha256
+
+def main(field currentTime, field pubKeyFirst, field pubKeySecond, field birthdayHashFirst, field birthdayHashSecond, private field bday, private field s) -> (field):
+    //0 == if currentTime > bday then 0 else 1 fi
+    digest = sha256([pubKeyFirst, pubKeySecond, bday, s])
+    //remember to pad
+    //return digest
+    digest[0] == birthdayHashSecond
+    digest[1] == birthdayHashFirst
+    return 1

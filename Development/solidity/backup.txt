@@ -1,2 +1,17 @@
 Metamask backup
 kingdom route frog cannon arena hard brown able south iron puzzle divorce
+
+Address:
+0x2A00CDf2032007133f21e794dd832DB2692D9426
+
+Birthday:
+Epoch timestamp: 946684800
+Timestamp in milliseconds: 946684800000
+Human time (GMT): Saturday, January 1, 2000 12:00:00 AM
+Human time (your time zone): Saturday, January 1, 2000 8:00:00 AM GMT+08:00
+
+Secret
+1
+
+Sha256:
+8C91EDE82094D275461A02DE74FDB96428A28E4076159DF403D00B956968AEA7
