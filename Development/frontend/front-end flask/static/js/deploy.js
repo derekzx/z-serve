@@ -1,15 +1,14 @@
 
-// var web3 = new Web3();
-// web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
-
-// loadFile();
-
-// function loadFile() {
-
-// }
-
 loadSCJson(callback)
 
+/**
+ * Creates a HTTP request which hits local Flask server to retrieve ./contracts/compiledContract.json
+ * This function has a callback unlike verify.js because we are using .ethereum not web3
+ * 
+ * TODO: Update to Web3
+ * 
+ * @param {*} callback 
+ */
 function loadSCJson(callback){
     var api = 'http://localhost:8000/scJson';
     const xhr = new XMLHttpRequest();
@@ -18,9 +17,9 @@ function loadSCJson(callback){
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             res = this.response
+            // We only want the bytecode data for verifier contract.
+            // Other contracts that are located here include library contracts
             bytecode_data = this.response["contracts"]["Verification"]["Verifier"]["evm"]["bytecode"]["object"]
-            // console.log(res)
-            // console.log(bytecode_data)
             connectMetamask(bytecode_data, callback)
         }
         return this.response
@@ -30,7 +29,11 @@ function loadSCJson(callback){
 }
 
 
-
+/**
+ * Takes in bytecode data for verifier contract and calls deployContract()
+ * @param {*} bytecode_data 
+ * @param {*} callback 
+ */
 function connectMetamask(bytecode_data, callback){
     if (typeof window.ethereum === 'undefined') {
         alert('Looks like you need a Dapp browser to get started.')
@@ -40,27 +43,27 @@ function connectMetamask(bytecode_data, callback){
         ethereum.enable()
 
         //User reject request
-            .catch(function (reason) {
-            if (reason === 'User rejected provider access') {
-            } else {
-                console.log(reason)
-                alert('There was an issue signing you in.')
-            }
-            })
-            .then(function (accounts) {
-                // You also should verify the user is on the correct network:
-                // if (ethereum.networkVersion !== desiredNetwork) {
-                //   alert('This application requires the main network, please switch it in your MetaMask UI.')
-            
-                // We plan to provide an API to make this request in the near future.
-                // https://github.com/MetaMask/metamask-extension/issues/3663
-                // }
-                const account = accounts[0]
-                deployContract(account, bytecode_data, callback)
-            })
+        .catch(function (reason) {
+        if (reason === 'User rejected provider access') {
+        } else {
+            console.log(reason)
+            alert('There was an issue signing you in.')
+        }
+        })
+        .then(function (accounts) {
+  
+            const account = accounts[0]
+            deployContract(account, bytecode_data, callback)
+        })
     } 
 }
 
+/**
+ * Deploys contract
+ * @param {*} account 
+ * @param {*} bytecode_data 
+ * @param {*} callback 
+ */
 function deployContract(account, bytecode_data, callback) {
     console.log(account)
     const method = 'eth_sendTransaction'
@@ -69,8 +72,6 @@ function deployContract(account, bytecode_data, callback) {
         gas: "0x2DC6C0",  // 3,000,000 gas
         gasPrice: "0x9184e72a000" , // Lots
         data: bytecode_data
-        // sample hello world data for debugging
-        // data: "6060604052341561000c57fe5b5b6101598061001c6000396000f30060606040526000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063cfae32171461003b575bfe5b341561004357fe5b61004b6100d4565b604051808060200182810382528381815181526020019150805190602001908083836000831461009a575b80518252602083111561009a57602082019150602081019050602083039250610076565b505050905090810190601f1680156100c65780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b6100dc610119565b604060405190810160405280600381526020017f486921000000000000000000000000000000000000000000000000000000000081525090505b90565b6020604051908101604052806000815250905600a165627a7a72305820ed71008611bb64338581c5758f96e31ac3b0c57e1d8de028b72f0b8173ff93a10029"
     }]
     const from = account
 
@@ -87,30 +88,35 @@ function deployContract(account, bytecode_data, callback) {
         console.log("Attempting to send transaction")
         const rejected = 'User denied transaction signature.'
         if (response.error && response.error.message.includes(rejected)) {
-            console.log(`Permission Error`)
+            console.error(`Permission Error`)
         }
     
         if (err) {
-            console.log('There was an issue, please try again.')
+            console.error('There was an issue, please try again.')
         }
     
         if (response.result) {
             // If there is a response.result, the call was successful.
             // In the case of this method, it is a transaction hash.
             const txHash = response.result
-            console.log('Contract Deployed at ' + txHash)
             document.getElementById("txHash").value = txHash;
-            pollForCompletion(account, txHash, callback)
+            pollForCompletion(txHash, callback)
         }
-        })
+    })
 }
 
-function pollForCompletion (account, txHash, callback) {
+/**
+ * Contract is not immediately deployed. Waits for transaction to be mined.
+ * Polling once every 2 seconds to check address of deployed contract
+ * NOTE: Normal ethereum blocks are mined every ~15s
+ * 
+ * TODO: Check manually on server side as well
+ * @param {*} txHash 
+ * @param {*} callback 
+ */
+function pollForCompletion (txHash, callback) {
     let calledBack = false
   
-    // Normal ethereum blocks are approximately every 15 seconds.
-    // Here we'll poll every 2 seconds.
-    // Checks for contract address
     const checkInterval = setInterval(function () {
   
       const notYet = 'response has no error or result'
@@ -123,33 +129,25 @@ function pollForCompletion (account, txHash, callback) {
           if (err.message.includes(notYet)) {
             return 'transaction is not yet mined'
           }
-  
-          callback(err || response.error)
+            callback(err || response.error)
         }
-  
-        // We have successfully verified the mined transaction.
-        // Mind you, we should do this server side, with our own blockchain connection.
-        // Client side we are trusting the user's connection to the blockchain.
         const txReceipt = response.result
-        console.log(txReceipt)
         clearInterval(checkInterval)
         calledBack = true
-        // getContractAddress(account, txHash, callback)
         document.getElementById("contractAddress").value = txReceipt["contractAddress"];
         callback(null, txReceipt)
       })
     }, 2000)
 }
 
-
+/**
+ * Final callback function reached when deployment is successful
+ * @param {*} err 
+ * @param {*} message 
+ */
 function callback(err, message) {
-    if (err == undefined){
-        console.log("callback has been reached. Deployment successful.")
-        document.getElementById("deployStatus").innerHTML = "Deployment Complete";
-        
-
-    }
-    else {
-        console.log(err)
-    }
+    if (err) console.error(err)
+    console.log("callback has been reached. Deployment successful.")
+    document.getElementById("deployStatus").innerHTML = "Deployment Complete";
+    
 }

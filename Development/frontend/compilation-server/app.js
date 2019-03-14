@@ -1,4 +1,4 @@
-console.log('Server-side code running');
+console.log('Server initialised');
 
 const express = require('express');
 const app = express();
@@ -6,30 +6,27 @@ var bodyParser = require('body-parser');
 var fs = require("fs")
 const compile = require('./compile.js')
 
-// app.use(express.bodyParser());
-
-// serve files from the public directory
+// Serve files from the public directory
 app.use(express.static('./'));
 app.use(bodyParser.json());
 
-
-// start the express web server listening on 8001
+// Start web server listening on port 8001
 app.listen(8001, () => {
   console.log('listening on 8001');
 });
 
-// serve the homepage
+// Serves homepage (help)
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-// serve the compilation
+// Serves compilation api
 app.post('/compile', async (req, res) => {
-  // console.log(req.body);
   verifierContract = req.body.verifierContract
 
+  // Writes verifier contract to file
   fs.writeFile("./contracts/verifier.sol", verifierContract, async function(err, data) {
-    if (err) console.log(err);
+    if (err) console.error(err);
 
     console.log("Successfully wrote verifier contract to file");
 
@@ -40,28 +37,35 @@ app.post('/compile', async (req, res) => {
     // Compiles smart contract
     let smartContract = await compile.compileSmartContract(verifierSource, "./contracts");
 
-    // fs.readFile('./contracts/compiledContract.json', async function(err, data) {
-    //   if (err) console.log(err)
-    //   compiledContract = JSON.parse(data)
-    //   console.log("hi")
-    //   res.send(compiledContract)
-    // });
+    // NOTE: This block can be used instead to return response once await function for solc is fixed
+    /* 
+    fs.readFile('./contracts/compiledContract.json', async function(err, data) {
+      if (err) console.log(err)
+      compiledContract = JSON.parse(data)
+      console.log("hi")
+      res.send(compiledContract)
+    });
+    */
   });
 
-
-  // var timeout
-  // TODO: Do while loop to prevent race conditions
   // Set timeout because of global variable in solc, unable to wrap in a promise/async await successfully
-  console.log("reaching timeout")
   var timer = setInterval(function() {
+
+    // Interval checks will continue until compiled contract is saved to server
     if (fs.existsSync('./contracts/compiledContract.json')) {
       console.log("reading file to return")
       fs.readFile('./contracts/compiledContract.json', function(err, data) {
         if (err) console.log(err)
         compiledContract = JSON.parse(data)
-        console.log("returning now")
+        console.log("returning file now")
         res.send(compiledContract)
+
+        // Deletes both raw and compiled contracts
         fs.unlink("./contracts/compiledContract.json", function(err, res){
+          if (err) console.log(err)
+          console.log("Deleting compiled contract")
+        });
+        fs.unlink("./contracts/verifier.sol", function(err, res){
           if (err) console.log(err)
           console.log("Deleting compiled contract")
         });
@@ -69,31 +73,6 @@ app.post('/compile', async (req, res) => {
       });
     } else {
       console.log("waiting for compilation")
-      // clearTimeout(timeout)
     }
-    // console.log("Compiled Contract is" + smartContract);
-    // let json = compile.jsonSmartContract("./contracts/verifier.sol");
-    // console.log("Read file is" + json);
-    // compile.jsonSmartContract("compiledContract.json").then(function(json) {
-    //   console.log("Read file is" + json.substring(0,30));
-    // }, function(err) {
-    //   console.log(err);
-    // });
-
-  }, 1000)
-  // clearTimeout(timeout)
-  // console.log("Compiled Contract is " + smartContract)
-  // res.send(data)
-
-
-
-  // compile.deploySmartContract("verifier.sol", function(err, res){
-  //   console.log("hi")  
-  //   if (err) {
-  //     console.log('Error' + err)
-  //   } else {
-  //     console.log("Hi")
-  //   }
-  // })
-  
+  }, 1000)  
 });

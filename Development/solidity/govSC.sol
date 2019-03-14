@@ -5,6 +5,7 @@ contract govSC {
     address owner;
 
     constructor() public{
+        // Example on a hardcoded birthdayHash
         birthdayHashes[0x2A00CDf2032007133f21e794dd832DB2692D9426] = 0x19E154992DDED7F825098D336696AC7DE950CC59FAF7EE42E907D5EA6A38C29A;
         owner = msg.sender;
         

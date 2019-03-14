@@ -5,8 +5,9 @@ from app.Forms import generateForm, deployForm
 import os
 import subprocess
 import time, datetime
+import contextlib
 
-
+# Landing page
 @app.route('/index')
 @app.route('/')
 def index():
@@ -15,16 +16,21 @@ def index():
     return render_template('index.html', title='Home', user=user)
 
 
-
+# Page to generate smart contract by hitting Zokrates docker container
 @app.route('/generate', methods=['GET', 'POST'])  
 def generate():
     form = generateForm()
+
+    # Placeholder for user
     user = {'username': 'Derek'}
+
     # Only returns compile page once form is filled and submitted
     if form.validate_on_submit():
         flash('Login requested for user {}, birthday={}'.format(
             form.pubKey.data, form.birthday.data))
 
+        # Converts to public key to bytes, pads it to 256b and splits it into 2 128b inputs
+        # Reason: Zokrates uses signed 128b (same amount of bits as unsigned 256b)
         pubKey = format(int(form.pubKey.data, 16), '0>128b')
         while(len(pubKey) < 256):
             pubKey = '0' + pubKey
@@ -32,6 +38,7 @@ def generate():
         pubKeyFirst = int(pubKey[:128], 2)
         pubKeySecond = int(pubKey[128:], 2)
 
+        # Converts birthday hash in the same way as public key
         birthdayHash = format(int(form.birthdayHash.data, 16), '0>128b')
         while(len(birthdayHash) < 256):
             birthdayHash = '0' + birthdayHash
@@ -39,10 +46,9 @@ def generate():
         birthdayHashFirst = int(birthdayHash[:128], 2)
         birthdayHashSecond = int(birthdayHash[128:], 2)     
 
-        #8 hours
+        # Currently running in Singapore (+8 GMT). Change as needed
         timeZoneDifference = 28800 
         birthdayUnix = int(time.mktime(datetime.datetime.strptime(form.birthday.data, "%d/%m/%Y").timetuple())) + timeZoneDifference
-        print(birthdayUnix)        
 
         secret = form.secret.data
 
@@ -55,12 +61,13 @@ def generate():
             "birthdayHashFirst" : birthdayHashFirst,
             "birthdayHashSecond": birthdayHashSecond
         }
-        print(json_generate)
 
-        # Create Smart Contract with docker image
+        # Create Smart Contract with Zokrates docker container
         res = requests.post('http://18.136.198.116/generate', json=json_generate)
         json_res = res.json()
         contract = json_res["contract"]
+
+        # Formats json proof for pretty print
         json_proof = json.dumps(json_res["proof"], sort_keys = True, indent = 4, separators = (',', ': '))
 
         # Save smart contract file
@@ -111,7 +118,6 @@ def deploy():
     if form.validate_on_submit():
         flash('Your contract has been deployed')
 
-
         return render_template('verify.html', user=placeholder, txHash=form.txHash.data, contractAddress=form.contractAddress.data)
     
     return render_template('deploy.html', user=placeholder, form=form)
@@ -122,6 +128,11 @@ def scJson():
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     json_url = os.path.join(SITE_ROOT, "../contracts", "compiledContract.json")
     data = json.load(open(json_url))
+
+    # Deletes file after sending
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(json_url)
+
     return jsonify(data)
 
 # Returns proof in json form
@@ -131,6 +142,10 @@ def proofJson():
     json_url = os.path.join(SITE_ROOT, "../contracts", "proof.json")
     proof = json.load(open(json_url))
     
+    # Deletes file after sending
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(json_url) 
+
     # Converts to string to avoid over-flow problems in json
     witness_str = []
     for i in proof["input"]:

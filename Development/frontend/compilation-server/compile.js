@@ -6,6 +6,12 @@ var async = require('async');
 
 console.log("imported modules")
 
+/**
+ * Function takes in file location and reads it
+ * 
+ * @param {string} smartContractLocation    File path of raw smart contract
+ * @returns {JSON} updatedSource            JSON with smart contract and required parameters included
+ */
 exports.readSmartContract = async function(smartContractLocation, cb){
     var filePath = path.resolve(__dirname, smartContractLocation);
     const source = fs.readFileSync(filePath, 'UTF-8');
@@ -29,81 +35,47 @@ exports.readSmartContract = async function(smartContractLocation, cb){
     return updatedSource
 }
 
-// Below lists the preferred version of the compiler that we are using
-// version:0.4.21+commit.dfe3193c.Emscripten.clang
-// var solcV047 = solc.useVersion("v0.4.7.commit.822622cf"); 
-// soljson-v0.4.21+commit.dfe3193c.js
-
+/**
+ *  Function compiles smart contract
+ *  Compiler version currently used: 0.4.21+commit.dfe3193c.Emscripten.clang
+ *  NOTE: Line that is retrieving file within solc.js - var solcV047 = solc.useVersion("v0.4.7.commit.822622cf"); 
+ * 
+ *  @param {JSON} smartContract                 Raw smart contract with required parameters
+ *  @param {string} output_location             Output file of smart contract
+ *  @returns {JSON} compiledContract            JSON of compiled contract
+ */
 exports.compileSmartContract = async function(smartContract, output_location, cb){
     var compiledContract
+
+    // Loads previous solc compiler
     solc.loadRemoteVersion("v0.4.21+commit.dfe3193c", async function(err, solc){
-        if(err) {
-            console.log(err);
-        } else {
+        if(err) console.error(err);
+        else {
+            
+            // Compiles contract
             compiledContract = JSON.parse(solc.compile(smartContract));
-            // console.log("output is" + JSON.stringify(compiledContract));
             if(compiledContract.errors) {
                 compiledContract.errors.forEach(err => console.log(err.formattedMessage));
             }
             jsonData = JSON.stringify(compiledContract);
+            
             fs.writeFileSync(output_location + "/compiledContract.json", jsonData, function(err) {
-                if (err) {
-                    console.log(err);
-                }
+                if (err) console.error(err);
             });
-            console.log(compiledContract)
             console.log("Contract compiled successfully" + compiledContract)     
         }
     });
     return compiledContract 
 }
 
+/**
+ *  This function can be used to test that the compiled contract are similar in both flask and node servers
+ * 
+ *  @param {string} compiledContractLocation    File path of compiled contract
+ *  @returns {string} source                    Compiled contract
+ */
 exports.jsonSmartContract = async function(compiledContractLocation, cb) {
     var filePath = path.resolve(__dirname, compiledContractLocation);
-    console.log("file path is " + filePath)
     const source = fs.readFileSync(filePath, 'UTF-8');
     return source
 }
-
-
-        // VerifierContract = compiledContract["contracts"]["Verification"]["Verifier"];
-        // VerifierABI = compiledContract["contracts"]["Verification"]["Verifier"]["abi"];
-        // VerifierBytecode = compiledContract["contracts"]["Verification"]["Verifier"]["evm"]["bytecode"]["object"];
-        // let provider = new Web3.providers.HttpProvider("http://localhost:8545");
-        // const web3 = new Web3(provider);
-        // let Verifier = new web3.eth.Contract(VerifierABI);
-
-        // // console.log("hi")
-
-        // // console.log(Verifier);
-        // //remove ""
-        // VerifierBytecode = "0x" + JSON.stringify(VerifierBytecode).substr(1).slice(0, -1)
-        // // console.log(VerifierBytecode)
-        // // Verifier.deploy({
-        // //     data: VerifierBytecode
-        // // })
-        // // .send({
-        // //     from: "0x4690fe8ec04967fa12f9ed8550d65ef6f6f23784",
-        // //     gas: 2800000
-        // // })
-        // // .then((newContractInstance) => {
-        // //     address = newContractInstance.options.address;
-        // //     console.log(newContractInstance.options.address) // instance with the new contract address
-        // //     return address;
-        // // });
-        // Verifier.deploy({
-        //         data: VerifierBytecode
-        //     })
-        //     .send({
-        //         from: "0x4690fe8ec04967fa12f9ed8550d65ef6f6f23784",
-        //         gas: 2800000
-        //     })
-        //     .then((newContractInstance) => {
-        //         address = newContractInstance.options.address;
-        //         console.log(newContractInstance.options.address) // instance with the new contract address
-        //         document.getElementById("address").textContent=address;
-        //         return address;
-                
-        //     });
-            
-        

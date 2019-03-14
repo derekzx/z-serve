@@ -1,9 +1,0 @@
-#!/bin/bash          
-docker build -t zokrates_test .
-
-echo building docker
-
-mkdir code
-docker run -v $PWD/code:/home/zokrates/ZoKrates/target/debug/code -ti zokrates_test /bin/bash
-
-echo docker running
