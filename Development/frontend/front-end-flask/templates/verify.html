@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Please verify the smart contract now</h2>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/web3.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bignumber.min.js') }}"></script>
+
+    <form class="submit-form" action="" method="post" novalidate></form>
+        <p>
+            {{ form.contractAddress.label }}<br>
+            {{ form.contractAddress(size=32, readonly=true, class="form-control form-control-lg", id="contractAddress") }}<br>
+            {% for error in form.contractAddress.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p>
+            {{ form.deploymentHash.label }}<br>
+            {{ form.deploymentHash(size=32, readonly=true, class="form-control form-control-lg", id="txHash", value=txHash) }}<br>
+            {% for error in form.deploymentHash.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p>
+            {{ form.verifyTxHash.label }}<br>
+            {{ form.verifyTxHash(size=32, readonly=true, class="form-control form-control-lg", id="verificationTxHash") }}<br>
+            {% for error in form.verifyTxHash.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+  
+        <h4>
+        <div class="container my-auto" id="verificationStatus">
+            Not verified yet
+        </div>
+        </h4>
+
+        <br>
+
+        <button onclick="location.href='/'" type="button" class="btn btn-lg btn-primary">
+            Go back home
+        </button>
+    </form>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/verify.js') }}"></script>
+    
+{% endblock %}

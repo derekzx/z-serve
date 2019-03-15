@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Hi, {{ user.username }}! Your smart contract is generated and saved</h1>
+    <br>
+    <div style="height: 360px; overflow: auto">
+    <!-- <div style="height:50%;width:50%"> -->
+        <pre id="jsonProof"> Proof: {{ proof }} </pre>
+    <!-- </div> -->
+    </div>
+    <br>
+    <button onclick="location.href='/compile'" type="button" class="btn btn-lg btn-primary">
+        Compile
+    </button>
+    
+{% endblock %}
