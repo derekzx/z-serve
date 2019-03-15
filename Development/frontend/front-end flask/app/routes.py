@@ -101,7 +101,6 @@ def compile():
 
     # Calls node js compiler
     res = requests.post('http://127.0.0.1:8001/compile', json=verifierContract_json)
-    print(res.json())
     
     # Save compiled contract file
     compiled_contract_file = open("./contracts/compiledContract.json", "w")
@@ -146,8 +145,8 @@ def proofJson():
     proof = json.load(open(json_url))
     
     # Deletes file after sending
-    with contextlib.suppress(FileNotFoundError):
-        os.remove(json_url) 
+    # with contextlib.suppress(FileNotFoundError):
+    #     os.remove(json_url) 
 
     # Converts to string to avoid over-flow problems in json
     witness_str = []
