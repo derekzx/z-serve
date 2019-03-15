@@ -7,8 +7,6 @@ import subprocess
 import time, datetime
 import contextlib
 
-SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-
 # Landing page
 @app.route('/index')
 @app.route('/')
@@ -89,6 +87,7 @@ def generate():
 def compile():
     placeholder = {'username': 'DerekC'}
 
+    SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     verifierContractLocation = os.path.join(SITE_ROOT, "../contracts", "verifier.sol")
     verifierContractFile = open(verifierContractLocation, "r")
     verifierContract = verifierContractFile.read()
@@ -100,6 +99,7 @@ def compile():
 
     # Calls node js compiler
     res = requests.post('http://127.0.0.1:8001/compile', json=verifierContract_json)
+    print(res.json())
     
     # Save compiled contract file
     compiled_contract_file = open("./contracts/compiledContract.json", "w")
@@ -116,16 +116,16 @@ def deploy():
 
     placeholder = {'username': 'DerekC'}
     if form.validate_on_submit():
-        verificationForm = verifyForm()
         flash('Your contract has been deployed')
 
-        return render_template('verify.html', user=placeholder, txHash=form.txHash.data, contractAddress=form.contractAddress.data, form=verificationForm)
+        return render_template('verify.html', user=placeholder, txHash=form.txHash.data, contractAddress=form.contractAddress.data)
     
     return render_template('deploy.html', user=placeholder, form=form)
 
 # Returns compiled smart contract in json form
 @app.route('/scJson', methods=['GET'])  
 def scJson():
+    SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     json_url = os.path.join(SITE_ROOT, "../contracts", "compiledContract.json")
     data = json.load(open(json_url))
 
@@ -138,6 +138,7 @@ def scJson():
 # Returns proof in json form
 @app.route('/proofJson', methods=['GET'])  
 def proofJson():
+    SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     json_url = os.path.join(SITE_ROOT, "../contracts", "proof.json")
     proof = json.load(open(json_url))
     
@@ -152,6 +153,7 @@ def proofJson():
     proof["input"] = witness_str
     
     return jsonify(proof)
+
 
 # Favicons
 @app.route('/favicon.ico')

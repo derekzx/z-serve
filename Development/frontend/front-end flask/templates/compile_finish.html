@@ -1,11 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Your smart contract has been compiled</h2>
-    
-    <br>
+    <h1>Hi, {{ user.username }}! Your smart contract has been compiled</h1>
+    <pre id="jsonProof"> Proof: {{ proof }} </pre>
 
-    <button onclick="location.href='/deploy'" type="button" class="btn btn-lg btn-primary">
+    <button onclick="location.href='/deploy'" type="button">
         Deploy
     </button>
     
