@@ -36,7 +36,6 @@ assert bday + 18_years > currentTime
 5. The prover will send the proof to the verification contract
 6. If a verifier sees a success event emitted by the verification contract, he can be convinced that the prover which sent the corresponding proof is more than 18 years old
 
-
 ## Folder directory
 ```
 
