@@ -7,6 +7,8 @@ import subprocess
 import time, datetime
 import contextlib
 
+SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+
 # Landing page
 @app.route('/index')
 @app.route('/')
@@ -116,9 +118,10 @@ def deploy():
 
     placeholder = {'username': 'DerekC'}
     if form.validate_on_submit():
+        verificationForm = verifyForm()
         flash('Your contract has been deployed')
 
-        return render_template('verify.html', user=placeholder, txHash=form.txHash.data, contractAddress=form.contractAddress.data)
+        return render_template('verify.html', user=placeholder, txHash=form.txHash.data, contractAddress=form.contractAddress.data, form=verificationForm)
     
     return render_template('deploy.html', user=placeholder, form=form)
 
