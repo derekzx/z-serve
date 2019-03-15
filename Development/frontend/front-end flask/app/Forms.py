@@ -6,13 +6,20 @@ from wtforms.validators import DataRequired
 class generateForm(FlaskForm):
     pubKey = StringField('Public Key', validators=[DataRequired()])
     birthdayHash = StringField('birthdayHash', validators=[DataRequired()])
-    birthday = PasswordField('Birthday (Format: dd/mm/yyyy)', validators=[DataRequired()])
+    birthday = PasswordField('Birthday', validators=[DataRequired()])
     secret = PasswordField('Secret', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Generate Smart Contract')
 
 # Form template for ./templates/deploy.html
 class deployForm(FlaskForm):
-    txHash = StringField('txHash', validators=[DataRequired()])
-    contractAddress = StringField('contractAddress', validators=[DataRequired()])
+    txHash = StringField('Transaction Hash', validators=[DataRequired()])
+    contractAddress = StringField('Contract Address', validators=[DataRequired()])
     submit = SubmitField('Continue to Verification')
+
+# Form template for ./templates/verify
+class verifyForm(FlaskForm):
+    contractAddress = StringField('Contract Address', validators=[DataRequired()])
+    deploymentHash = StringField('Deployment Hash', validators=[DataRequired()])
+    verifyTxHash = StringField('Verification Tx Hash', validators=[DataRequired()])
+    submit = SubmitField('Finish')

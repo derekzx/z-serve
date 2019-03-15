@@ -103,13 +103,10 @@ function verifyProof(proof){
     web3.eth.defaultAccount = web3.eth.accounts[0]
     var verifierContract= web3.eth.contract(ABI)
 
-    // Minor formatting to remove whitespaces
-    unFormattedContractAddress = document.getElementById("contractAddress").innerHTML
-    CAStartIndex = unFormattedContractAddress.indexOf('0')
-    contractAddress = unFormattedContractAddress.substring(CAStartIndex, CAStartIndex+42)
+    contractAddress = document.getElementById("contractAddress").value
 
     var verifier = verifierContract.at(contractAddress)
-    
+  
     // Event listener for verifier contract. All events that are fired by the verifier contract are constantly monitored
     var instructorEvent = verifier.Verified({}, {fromBlock: 0, toBlock: 'latest'});
 
@@ -121,7 +118,7 @@ function verifyProof(proof){
             web3.eth.getBlockNumber(function (error, result) {
                 if (error) console.error(error)
                 // This condition ensures that our webapp will only recognize the latest 'Verified' event
-                if (result==blockNumber && txHash==document.getElementById("verificationTxHash").innerHTML){
+                if (result==blockNumber && txHash==document.getElementById("verificationTxHash").value){
                     document.getElementById("verificationStatus").innerHTML = "Verified"
                 }
             })
@@ -147,8 +144,7 @@ function verifyProof(proof){
         if (error) console.error(error)
         web3.eth.getTransactionReceipt(result, function(error, result){
             if (error) console.error(error)
-            document.getElementById("verificationTxHash").innerHTML = result["transactionHash"]
-            console.log(result)           
+            document.getElementById("verificationTxHash").value = result["transactionHash"]       
         })
     })
 }

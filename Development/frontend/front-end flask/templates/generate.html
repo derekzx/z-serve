@@ -2,38 +2,40 @@
 
 {% block content %}
     <h1>Key in your details</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.pubKey.label }}<br>
-            {{ form.pubKey(size=32, readonly=true) }}<br>
-            {% for error in form.pubKey.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.birthdayHash.label }}<br>
-            {{ form.birthdayHash(size=32, readonly=true) }}<br>
-            {% for error in form.birthdayHash.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.birthday.label }}<br>
-            {{ form.birthday(size=32) }}<br>
-            {% for error in form.birthday.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.secret.label }}<br>
-            {{ form.secret(size=32) }}<br>
-            {% for error in form.secret.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <!-- <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p> -->
-        <p>{{ form.submit() }}</p>
+    <form class="submit-form" action="" method="post" novalidate>
+        
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.pubKey.label }}<br>
+                {{ form.pubKey(size=32, readonly=true, class="form-control form-control-lg") }}<br>
+                {% for error in form.pubKey.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.birthdayHash.label }}<br>
+                {{ form.birthdayHash(size=32, readonly=true, class="form-control form-control-lg") }}<br>
+                {% for error in form.birthdayHash.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.birthday.label }}<br>
+                {{ form.birthday(size=32, class="form-control form-control-lg", placeholder="dd/mm/yyyy") }}<br>
+                {% for error in form.birthday.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.secret.label }}<br>
+                {{ form.secret(size=32, class="form-control form-control-lg") }}<br>
+                {% for error in form.secret.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <!-- <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p> -->
+            <p>{{ form.submit(class="btn btn-lg btn-primary") }}</p>
+        
         <script type="text/javascript" src="{{ url_for('static', filename='js/generate.js') }}"></script>
     </form>
 {% endblock %}

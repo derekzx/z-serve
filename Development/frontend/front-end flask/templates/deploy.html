@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Hi, {{ user.username }}! You can deploy the smart contract now</h1>
+    <h2>You can deploy the smart contract now</h2>
     <script type="text/javascript" src="{{ url_for('static', filename='js/web3.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/deploy.js') }}"></script>
 
@@ -9,23 +9,26 @@
         {{ form.hidden_tag() }}
         <p>
             {{ form.txHash.label}}<br>
-            {{ form.txHash(size=32, readonly=true) }}<br>
+            {{ form.txHash(size=32, readonly=true, class="form-control form-control-lg") }}<br>
             {% for error in form.txHash.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p>
             {{ form.contractAddress.label }}<br>
-            {{ form.contractAddress(size=32, readonly=true) }}<br>
+            {{ form.contractAddress(size=32, readonly=true, class="form-control form-control-lg") }}<br>
             {% for error in form.contractAddress.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p>{{ form.submit() }}</p>
+        <p>{{ form.submit(class="btn btn-lg btn-primary") }}</p>
     </form>
 
+    <br><br><br>
+    <h3>
     <div id="deployStatus">
         Deploying....
     </div>
+    </h3>
     
 {% endblock %}
