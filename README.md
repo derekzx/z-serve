@@ -25,7 +25,6 @@
 1. Docker
 2. Amazon-cli
 
-
 ## Instructions
 1. (If required) Startup local testnet using command below. If using own wallet remember to change the address of the gov smart contract
 
