@@ -2,9 +2,12 @@
 
 {% block content %}
     <h1>Hi, {{ user.username }}! Your smart contract is generated and saved</h1>
-    <pre id="jsonProof"> Proof: {{ proof }} </pre>
-
-    <button onclick="location.href='/compile'" type="button">
+    <br>
+    <div style="height: 360px; overflow: auto">
+        <pre id="jsonProof"> Proof: {{ proof }} </pre>
+    </div>
+    <br>
+    <button onclick="location.href='/compile'" type="button" class="btn btn-lg btn-primary">
         Compile
     </button>
     
