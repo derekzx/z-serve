@@ -14,5 +14,28 @@
 └── README.md
 ```
 
+## Requirements
+
+### Necessary
+1. Node.js
+2. Python 3
+3. Metamask extension
+
+### Optional
+1. Docker
+2. Amazon-cli
+
+
 ## Instructions
-Read ./instructions
+1. (If required) Startup local testnet using command below. If using own wallet remember to change the address of the gov smart contract
+
+> testrpc -m "kingdom route frog cannon arena hard brown able south iron puzzle divorce"
+
+
+2. Deploy gov smart contract
+
+3. Run `node app.js` within `./Development/frontend/compilation server` to start up the compilation folder
+
+4. Run `python3 App.py` (or any other command that you bound Py3 PATH to) within `./Development/frontend/front-end flask` to start up the front-end flask server
+
+5. Access localhost:8000 on your browser to see it for yourself!
