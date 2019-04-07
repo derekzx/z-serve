@@ -69,8 +69,8 @@ function deployContract(account, bytecode_data, callback) {
     const method = 'eth_sendTransaction'
     const parameters = [{
         from: account,
-        gas: "0x2DC6C0",  // 3,000,000 gas
-        gasPrice: "0x9184e72a000" , // Lots
+        gas: "0x1E8480",  // 3,000,000 gas
+        gasPrice: "0x1E8480" , // 2,000,000 wei (2 Gwei)
         data: bytecode_data
     }]
     const from = account

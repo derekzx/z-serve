@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Please verify the smart contract now</h2>
+    <h2>Please verify your proof using the smart contract now</h2>
     <script type="text/javascript" src="{{ url_for('static', filename='js/web3.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bignumber.min.js') }}"></script>
 
@@ -37,6 +37,9 @@
         </h4>
 
         <br>
+        <button onclick="window.print()" type="button" class="btn btn-lg btn-primary">
+            Print
+        </button>
 
         <button onclick="location.href='/'" type="button" class="btn btn-lg btn-primary">
             Go back home

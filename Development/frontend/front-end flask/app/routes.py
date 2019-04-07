@@ -28,8 +28,8 @@ def generate():
 
     # Only returns compile page once form is filled and submitted
     if form.validate_on_submit():
-        flash('Login requested for user {}, birthday={}'.format(
-            form.pubKey.data, form.birthday.data))
+        # flash('Login requested for user {}, birthday={}'.format(
+        #     form.pubKey.data, form.birthday.data))
 
         # Converts to public key to bytes, pads it to 256b and splits it into 2 128b inputs
         # Reason: Zokrates uses signed 128b (same amount of bits as unsigned 256b)
