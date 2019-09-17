@@ -1,4 +1,4 @@
-# ZKP of age
+# ZKP of Age
 
 Goal: To find the age of a person passes a certain value without him revealing his actual age
 
